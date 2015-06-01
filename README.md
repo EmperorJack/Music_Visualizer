@@ -7,6 +7,7 @@ For a creative coding project I had to build a data visualization based on audio
 I worked with particles and 3D geometry to creative a dynamic design that is mesmerising and composes well in 3D space.
 
 ~Installation~
+- Download the project zip.
 - Requires Processing: https://processing.org/
 - Make sure you are using a form of Stereo-Mix (records PC output audio as input stream).
 - Open the sketch via the "Music-Visualizer.pde".
