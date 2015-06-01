@@ -13,6 +13,11 @@ I worked with particles and 3D geometry to creative a dynamic design that is mes
 - Open the sketch via the "Music-Visualizer.pde".
 - Run the sketch.
 
+~Usage~
+- Press the D key to toggle display of statistical overlay.
+- Press the H key to toggle display of documentation.
+- The space key can be used to toggle the visualizer state at any time.
+
 Font source: http://www.dafont.com/code.font
 
 By Jack Purvis
