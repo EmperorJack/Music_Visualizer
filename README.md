@@ -1,7 +1,8 @@
-# Music-Visualizer
+# Music Visualizer
 Real-time Audio Visualizer coded in Processing. Models made in Maya.
 
 ~Background~
+
 For a creative coding project I had to build a data visualization based on audio data. I created a music visualizer aimed at electronic dance music. I drew inspiration from realtime visualizers such as the Apple Itunes or Windows Media Player designs.
  
 I worked with particles and 3D geometry to creative a dynamic design that is mesmerising and composes well in 3D space.
