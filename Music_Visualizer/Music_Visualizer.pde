@@ -2,7 +2,7 @@ import ddf.minim.*;
 import ddf.minim.analysis.*;
 
 /*
- * Jack Purvis (300311934)
+ * Jack Purvis
  * MDDN242: Project 2
  * MUSIC VISUALIZER
  */
