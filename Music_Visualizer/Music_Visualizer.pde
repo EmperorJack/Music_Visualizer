@@ -8,11 +8,18 @@ import ddf.minim.analysis.*;
  */
 
 // sketch fields
-int w = 1920;
-int h = 1080;
+int w = 1024;
+int h = 576;
 int halfWidth = w / 2;
 int halfHeight = h / 2;
 float scaling;
+
+// delta time fields
+float ticks = 60f;
+float ns;
+float delta;
+long lastTime;
+long currentTime;
 
 // state and percentage fields
 float pct;
@@ -130,12 +137,33 @@ void setup() {
   if (replayAudioData) {
     loadAudioData();
   }
+  
+  // delta time setup
+  ns = 1000 / ticks;
+  delta = 0;
+  currentTime = 0;
+  lastTime = millis();
 }
 
 /*
- * Main program loop.
+ * Main program loop. Performs delta time operations.
  */
 void draw() {
+  currentTime = millis();
+  println("current: " + currentTime + " last: " + lastTime);
+  delta += (currentTime - lastTime) / ns;
+  lastTime = currentTime;
+  if (delta >= 1) {
+    tick();
+    delta--;
+  }
+  println(delta);
+}
+
+/*
+ * Tick method for performing program updates and drawing.
+ */
+void tick() {
   // draw the sketch background receptive to the current colour
   background(color(hue, 50, (volVal * beatVal) * 20 + 10));
 
