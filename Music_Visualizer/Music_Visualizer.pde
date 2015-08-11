@@ -8,8 +8,8 @@ import ddf.minim.analysis.*;
  */
 
 // sketch fields
-int w = 1000;
-int h = 1000;
+int w = 1920;
+int h = 1080;
 int halfWidth = w / 2;
 int halfHeight = h / 2;
 float scaling;
@@ -33,6 +33,7 @@ float pctCol;
 
 // audio fields
 Minim minim;
+AudioPlayer song;
 LiveAudioReader audioReader;
 float beatVal;
 float volVal;
@@ -47,6 +48,16 @@ Shape3D[] volumeShapes;
 float[] camAngle;
 float[][] camSpin;
 
+// frame recording
+boolean recordFrames = false;
+int recordId = 0;
+
+// audio data recording and replaying
+boolean recordAudioData = false;
+boolean replayAudioData = false;
+ArrayList<Float> volVals = new ArrayList<Float>();
+ArrayList<Float> beatVals = new ArrayList<Float>();
+
 /*
  * Initialize the program.
  */
@@ -54,12 +65,12 @@ void setup() {
   // setup sketch
   size(w, h, P3D);
   colorMode(HSB, 360, 100, 100);
-  
+
   // state and percentage setup
   pct = 0;
   pctInc = 0.0005;
   state = 0;
-  
+
   // documentation and hud display setup
   displayHUD = false;
   displayDocumentation = false;
@@ -68,11 +79,14 @@ void setup() {
   docImage = loadImage("documentation.png");
 
   // determine proper sketch scaling
-  scaling = min(w / 1000f, h / 1000f);
+  scaling = min(w / 800f, h / 800f);
 
   // setup audio
   minim = new Minim(this);
   audioReader = new LiveAudioReader();
+  if (recordAudioData) {
+    song = minim.loadFile("deadmau5 feat. Chris James - The Veldt (Tommy Trash Remix).mp3");
+  }
   beatVal = 0;
   volVal = 0;
 
@@ -106,6 +120,16 @@ void setup() {
       0.25, -0.15, 0.2
     }
   };
+
+  // play the track if recording or replaying audio data
+  if (recordAudioData) {
+    song.play();
+  }
+
+  // load audio data if replay intended
+  if (replayAudioData) {
+    loadAudioData();
+  }
 }
 
 /*
@@ -133,13 +157,15 @@ void draw() {
   rotateZ(radians(camAngle[2] += camSpin[state][2]));
 
   // interpret the live audio data from minim
-  audioReader.readLiveVolume();
-  audioReader.readLiveBeats();
+  if (!replayAudioData) {
+    audioReader.readLiveVolume();
+    audioReader.readLiveBeats();
+  }
 
   // update the colour cycle
   colourUpdate();
 
-  // update teh state cycle
+  // update the state cycle
   stateUpdate();
 
   // update and draw the particle system
@@ -158,6 +184,35 @@ void draw() {
   // display documentation information if enabled
   if (displayDocumentation) {
     drawDocumentation();
+  }
+
+  // save a frame
+  if (recordFrames) {
+    saveFrame("recordedFrames/frame_" + recordId + ".tga");
+    recordId++;
+  }
+
+  // record audio data
+  if (recordAudioData) {
+    volVals.add(volVal);
+    beatVals.add(beatVal);
+    
+    // check if song ended
+    if (!song.isPlaying()) {
+      // stop program as recording finished
+      stop();
+    }
+  }
+
+  // replay audio data
+  if (replayAudioData) {
+    if (frameCount < volVals.size()) {
+      volVal = volVals.get(frameCount);
+      beatVal = beatVals.get(frameCount);
+    } else {
+      // if song ended
+      stop();
+    }
   }
 }
 
@@ -215,6 +270,8 @@ void keyPressed() {
     displayHUD = !displayHUD;
   } else if (key == 'h') {
     displayDocumentation = !displayDocumentation;
+  } else if (key == 's') {
+    stop();
   }
 }
 
@@ -224,7 +281,7 @@ void keyPressed() {
 void drawHUD() {
   fill(color(hue, 100, 100));
   scale(scaling);
-  
+
   // draw the statistics as text
   text("FPS: " + (int) frameRate, 15, 30);
   text("State: " + state, 15, 60);
@@ -238,14 +295,50 @@ void drawHUD() {
 void drawDocumentation() {
   scale(scaling);
   noStroke();
-  
+
   // draw an overlay over the visualizer
   fill(color(0, 0, 0), 220);
   rect(0, 0, width, height);
-  
+
   // draw the text documentation
   fill(color(hue, 100, 100));
-  
+
   image(docImage, 0, 0);
+}
+
+void loadAudioData() {
+  // load in the data
+  String[] volValsString = loadStrings("recordedAudio/volVals.txt");
+  String[] beatValsString = loadStrings("recordedAudio/beatVals.txt");
+
+  // convert each float value to a string
+  for (int i = 0; i < volValsString.length; i++) {
+    volVals.add(float(volValsString[i]));
+    beatVals.add(float(beatValsString[i]));
+  }
+}
+
+void stop() {
+  // stop minim properly
+  audioReader.stopMinim();
+
+  // save out recorded audio data
+  if (recordAudioData) {
+    // output data must be strings
+    String[] volValsString = new String[volVals.size()];
+    String[] beatValsString = new String[beatVals.size()];
+
+    // convert each float value to a string
+    for (int i = 0; i < volVals.size (); i++) {
+      volValsString[i] = volVals.get(i).toString();
+      beatValsString[i] = beatVals.get(i).toString();
+    }
+
+    // save out the data
+    saveStrings("recordedAudio/volVals.txt", volValsString);
+    saveStrings("recordedAudio/beatVals.txt", beatValsString);
+  }
+
+  exit();
 }
 

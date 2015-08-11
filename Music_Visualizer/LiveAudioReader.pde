@@ -5,7 +5,6 @@
 class LiveAudioReader {
 
   // minim fields
-  AudioPlayer song;
   BeatDetect beat;
   BeatListener bl;
   AudioInput in;
@@ -89,7 +88,7 @@ class LiveAudioReader {
   /*
    * Upon the sketch stopping halt minim.
    */
-  void stop() {
+  void stopMinim() {
     in.close();
     minim.stop();
   }
