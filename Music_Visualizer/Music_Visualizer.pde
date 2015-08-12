@@ -8,14 +8,7 @@ import ddf.minim.analysis.*;
  */
 
 // sketch fields
-int w = 1024;
-int h = 576;
-int halfWidth = w / 2;
-int halfHeight = h / 2;
 float scaling;
-int framerate = 60;
-
-// delta time fields
 float delta;
 int targetFrameRate = 60;
 
@@ -68,7 +61,7 @@ ArrayList<Float> beatVals = new ArrayList<Float>();
  */
 void setup() {
   // setup sketch
-  size(w, h, P3D);
+  size(displayWidth, displayHeight, P3D);
   colorMode(HSB, 360, 100, 100);
 
   // state and percentage setup
@@ -84,7 +77,7 @@ void setup() {
   docImage = loadImage("documentation.png");
 
   // determine proper sketch scaling
-  scaling = min(w / 800f, h / 800f);
+  scaling = min(displayWidth / 1000f, displayHeight / 1000f);
 
   // setup audio
   minim = new Minim(this);
@@ -154,7 +147,7 @@ void tick() {
     audioReader.readLiveVolume();
     audioReader.readLiveBeats();
   }
-  
+
   // draw the sketch background receptive to the current colour
   background(color(hue, 50, (volVal * beatVal) * 20 + 10));
 
@@ -165,7 +158,7 @@ void tick() {
   pushMatrix();
 
   // translate to sketch center
-  translate(halfWidth, halfHeight, -350);
+  translate(displayWidth / 2, displayHeight / 2, -350);
 
   // scale sketch to proper size
   scale(scaling);
@@ -287,13 +280,6 @@ void keyPressed() {
     displayDocumentation = !displayDocumentation;
   } else if (key == 's') {
     stop();
-  } else if (key == 'f') {
-    if (framerate == 30) {
-      framerate = 60;
-    } else {
-      framerate = 30;
-    }
-    frameRate(framerate);
   }
 }
 
