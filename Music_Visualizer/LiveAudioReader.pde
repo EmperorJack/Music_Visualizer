@@ -57,7 +57,7 @@ class LiveAudioReader {
       volVal = 0;
     } else {
       // decrease the volume value
-      volVal = constrain(volVal * 0.95, 0, 1);
+      volVal = constrain(volVal * pow(0.95, delta), 0, 1);
     }
 
     // cycle the current volume value for next call
@@ -81,7 +81,7 @@ class LiveAudioReader {
       beatVal = 0;
     } else {
       // decrease the beat value
-      beatVal = constrain(beatVal * 0.85, 0, 1);
+      beatVal = constrain(beatVal * pow(0.85, delta), 0, 1);
     }
   }
 

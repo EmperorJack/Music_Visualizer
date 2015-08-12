@@ -73,9 +73,9 @@ class Shape3D {
     scale(120);
 
     // rotate the shape
-    rotateX(radians(angle[0] += spin[0]));
-    rotateY(radians(angle[1] += spin[1]));
-    rotateZ(radians(angle[2] += spin[2]));
+    rotateX(radians(angle[0] += (spin[0] * delta)));
+    rotateY(radians(angle[1] += (spin[1] * delta)));
+    rotateZ(radians(angle[2] += (spin[2] * delta)));
 
     shape(state);
 

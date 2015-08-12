@@ -13,13 +13,11 @@ int h = 576;
 int halfWidth = w / 2;
 int halfHeight = h / 2;
 float scaling;
+int framerate = 60;
 
 // delta time fields
-float ticks = 60f;
-float ns;
 float delta;
-long lastTime;
-long currentTime;
+int targetFrameRate = 60;
 
 // state and percentage fields
 float pct;
@@ -137,26 +135,14 @@ void setup() {
   if (replayAudioData) {
     loadAudioData();
   }
-  
-  // delta time setup
-  ns = 1000 / ticks;
-  delta = 0;
-  currentTime = 0;
-  lastTime = millis();
 }
 
 /*
  * Main program loop. Performs delta time operations.
  */
 void draw() {
-  currentTime = millis();
-  println("current: " + currentTime + " last: " + lastTime);
-  delta += (currentTime - lastTime) / ns;
-  lastTime = currentTime;
-  if (delta >= 1) {
-    tick();
-    delta--;
-  }
+  delta = targetFrameRate / frameRate;
+  tick();
   println(delta);
 }
 
@@ -164,6 +150,12 @@ void draw() {
  * Tick method for performing program updates and drawing.
  */
 void tick() {
+  // interpret the live audio data from minim
+  if (!replayAudioData) {
+    audioReader.readLiveVolume();
+    audioReader.readLiveBeats();
+  }
+  
   // draw the sketch background receptive to the current colour
   background(color(hue, 50, (volVal * beatVal) * 20 + 10));
 
@@ -180,15 +172,9 @@ void tick() {
   scale(scaling);
 
   // rotate the camera
-  rotateX(radians(camAngle[0] += camSpin[state][0]));
-  rotateY(radians(camAngle[1] += camSpin[state][1]));
-  rotateZ(radians(camAngle[2] += camSpin[state][2]));
-
-  // interpret the live audio data from minim
-  if (!replayAudioData) {
-    audioReader.readLiveVolume();
-    audioReader.readLiveBeats();
-  }
+  rotateX(radians(camAngle[0] += (camSpin[state][0] * delta)));
+  rotateY(radians(camAngle[1] += (camSpin[state][1] * delta)));
+  rotateZ(radians(camAngle[2] += (camSpin[state][2] * delta)));
 
   // update the colour cycle
   colourUpdate();
@@ -224,7 +210,7 @@ void tick() {
   if (recordAudioData) {
     volVals.add(volVal);
     beatVals.add(beatVal);
-    
+
     // check if song ended
     if (!song.isPlaying()) {
       // stop program as recording finished
@@ -248,7 +234,8 @@ void tick() {
  * Update the visualizer colour based on current percent.
  */
 void colourUpdate() {
-  pctCol += pctInc;
+  // increment the colour percent
+  pctCol += (pctInc * delta);
   if (pctCol >= 1) {
     pctCol = 0;
   }
@@ -266,7 +253,8 @@ void colourUpdate() {
  * Update the visualizer state based on current percent.
  */
 void stateUpdate() {
-  pct += pctInc;
+  // increment the state percent
+  pct += (pctInc * delta);
   if (pct >= 1) {
     toggleState();
   }
@@ -300,6 +288,13 @@ void keyPressed() {
     displayDocumentation = !displayDocumentation;
   } else if (key == 's') {
     stop();
+  } else if (key == 'f') {
+    if (framerate == 45) {
+      framerate = 60;
+    } else {
+      framerate = 45;
+    }
+    frameRate(framerate);
   }
 }
 

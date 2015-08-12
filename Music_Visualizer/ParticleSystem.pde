@@ -115,7 +115,8 @@ class ParticleSystem {
 
       // move the particle
       // velocity multiplies on current beat value
-      pos.add(PVector.mult(vel, (velMult * beatVal) + 1));
+      PVector inc = PVector.mult(vel, (velMult * beatVal) + 1);
+      pos.add(PVector.mult(inc, delta));
     }
 
     /*
