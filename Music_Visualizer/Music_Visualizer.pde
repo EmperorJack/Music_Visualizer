@@ -143,7 +143,6 @@ void setup() {
 void draw() {
   delta = targetFrameRate / frameRate;
   tick();
-  println(delta);
 }
 
 /*
@@ -289,10 +288,10 @@ void keyPressed() {
   } else if (key == 's') {
     stop();
   } else if (key == 'f') {
-    if (framerate == 45) {
+    if (framerate == 30) {
       framerate = 60;
     } else {
-      framerate = 45;
+      framerate = 30;
     }
     frameRate(framerate);
   }

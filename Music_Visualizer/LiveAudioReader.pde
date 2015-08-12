@@ -46,7 +46,7 @@ class LiveAudioReader {
     // if the volume changed enough
     if (volDiff > 0.1) {
       // bump up the volume value
-      volVal += (volDiff);
+      volVal += (volDiff * delta);
     }
 
     // constrain the volume value
@@ -69,9 +69,9 @@ class LiveAudioReader {
    */
   void readLiveBeats() {
     // if a type of beat was found bump up the beat value
-    if (beat.isHat()) beatVal += 0.18;
-    if (beat.isSnare()) beatVal += 0.22;
-    if (beat.isKick()) beatVal += 0.25;
+    if (beat.isHat()) beatVal += (0.18 * delta);
+    if (beat.isSnare()) beatVal += (0.22 * delta);
+    if (beat.isKick()) beatVal += (0.25 * delta);
 
     // constrain the beat value
     beatVal = constrain(beatVal, 0, 1);
