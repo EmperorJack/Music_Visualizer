@@ -164,9 +164,9 @@ void tick() {
   scale(scaling);
 
   // rotate the camera
-  rotateX(radians(camAngle[0] += (camSpin[state][0] * delta) * (beatVal + 0.75)));
-  rotateY(radians(camAngle[1] += (camSpin[state][1] * delta) * (beatVal + 0.75)));
-  rotateZ(radians(camAngle[2] += (camSpin[state][2] * delta) * (beatVal + 0.75)));
+  rotateX(radians(camAngle[0] += (camSpin[state][0] * delta) * (beatVal + 1)));
+  rotateY(radians(camAngle[1] += (camSpin[state][1] * delta) * (beatVal + 1)));
+  rotateZ(radians(camAngle[2] += (camSpin[state][2] * delta) * (beatVal + 1)));
 
   // update the colour cycle
   colourUpdate();
