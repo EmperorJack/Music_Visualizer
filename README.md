@@ -8,8 +8,9 @@ For a creative coding project I had to build a data visualization based on audio
 I worked with particles and 3D geometry to creative a dynamic design that is mesmerising and composes well in 3D space.
 
 ~Installation~
-- Download the project zip.
+- Download the project zip and extract.
 - Requires Processing: https://processing.org/
+- Ensure the minim library is downloaded and imported. Sketch --> Import Library --> Add Library --> Find Minim --> Install.
 - Make sure you are using a form of Stereo-Mix (records PC output audio as input stream).
 - Open the sketch via the "Music-Visualizer.pde".
 - Run the sketch.
@@ -23,3 +24,6 @@ Font source: http://www.dafont.com/code.font
 
 By Jack Purvis
 emperorpurvis@gmail.com
+
+~License~
+http://creativecommons.org/licenses/by-nc-nd/4.0/
