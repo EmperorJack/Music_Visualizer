@@ -5,7 +5,7 @@
 class ParticleSystem {
   // particle fields
   ArrayList<Particle> particles = new ArrayList<Particle>();
-  int particleMax = 800;
+  int particleMax = 400;
   int particleNum = 0;
 
   // line threshold and max lines per particle
@@ -55,21 +55,19 @@ class ParticleSystem {
       particleNum++;
     }
 
-    // reset all the particle connections
-    for (Particle p : particles) {
-      p.resetConnected();
-    }
-
     // update each particle position
     for (Particle p : particles) {
       p.update(velMult);
     }
+    
+    strokeWeight(1);
 
     // compute and draw the lines coming from each particle
-    for (Particle p : particles) {
-      p.computeLines();
-      p.drawLines();
+    for (int i = 0; i < particles.size(); i++) {
+      particles.get(i).lines(i + 1);
     }
+    
+    noStroke();
 
     // draw each particle
     for (Particle p : particles) {
@@ -95,7 +93,6 @@ class ParticleSystem {
 
     // connected particle fields
     int linesNum;
-    ArrayList<Particle> connected = new ArrayList<Particle>();
 
     /*
      * Setup a new particle.
@@ -118,55 +115,33 @@ class ParticleSystem {
       PVector inc = PVector.mult(vel, (velMult * beatVal) + 1);
       pos.add(PVector.mult(inc, delta));
     }
-
+    
     /*
-     * Compute the lines coming from this particle.
+     * Compute and draw the lines coming from this particle.
      */
-    void computeLines() {
-      // check the max number of connections has not been reached
-      if (linesNum <= linesMax) {
-        // check other particles in the system
-        for (Particle p : particles) {
-          // if the other particle is close enough
-          if (withinLineDistance(p) && p != this) {
-            // add the particle to connections
-            connected.add(p);
-            linesNum++;
-
-            // tell the other particle it is connected to this particle
-            p.addConnected(this);
-          }
-        }
-      }
-    }
-
-    /*
-     * Another particle connected to this particle so remember the connection.
-     */
-    void addConnected(Particle p) {
-      connected.add(p);
-      linesNum++;
-    }
-
-    /*
-     * Reset the connections from this particle to other particles.
-     */
-    void resetConnected() {
+    void lines(int start) {
       linesNum = 0;
-      connected.clear();
-    }
+      
+      // for each other particle from the start index
+      for (int i = start; i < particles.size(); i++) {
+        
+        // if the other particle is close enough
+        if (pos.dist(particles.get(i).pos) < linesRad) {
+          
+          // set line opactiy to vary with beat value and distance to origin or bounds
+          stroke(colour, beatVal * distOpacity());
 
-    /*
-     * Draw all the lines coming from this particle.
-     */
-    void drawLines() {
-      // for each connected particle
-      for (Particle p : connected) {
-        // line opactiy varies with beat value and distance to origin or bounds
-        stroke(colour, beatVal * distOpacity());
+          // draw a line from this particle to the other particle
+          line(pos.x, pos.y, pos.z, particles.get(i).pos.x, particles.get(i).pos.y, particles.get(i).pos.z);
 
-        // draw a line from this particle to it's neighbour
-        line(pos.x, pos.y, pos.z, p.pos.x, p.pos.y, p.pos.z);
+          // increment line counter
+          linesNum++;
+        }
+
+        // check if the particle has reached the maximum number of lines
+        if (linesNum == linesMax) {
+          break;
+        }
       }
     }
 
@@ -177,27 +152,18 @@ class ParticleSystem {
       pushMatrix();
 
       // translate to particle depth
-      translate(0, 0, pos.z);
+      translate(pos.x, pos.y, pos.z);
 
       // particle opactiy varies distance to origin or bounds
-      stroke(colour, distOpacity());
+      rotateX(-radians(camAngle[0]));
+      rotateY(-radians(camAngle[1]));
+      rotateZ(-radians(camAngle[2]));
       fill(colour, distOpacity());
 
       // draw the particle
-      ellipse(pos.x, pos.y, -2, 2);
+      ellipse(0, 0, -3, 3);
 
       popMatrix();
-    }
-
-    /*
-     * Check if the particle is within the line drawing threshold
-     * of another paticle.
-     */
-    boolean withinLineDistance(Particle other) {
-      if (pos.dist(other.pos) < linesRad) {
-        return true;
-      }
-      return false;
     }
 
     /*
@@ -312,4 +278,3 @@ class ParticleSystem {
     }
   }
 }
-

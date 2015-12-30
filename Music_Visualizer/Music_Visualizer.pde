@@ -61,8 +61,10 @@ ArrayList<Float> beatVals = new ArrayList<Float>();
  */
 void setup() {
   // setup sketch
-  size(displayWidth, displayHeight, P3D);
+  fullScreen(P3D, 2);
   colorMode(HSB, 360, 100, 100);
+  frameRate(60);
+  noSmooth();
 
   // state and percentage setup
   pct = 0;
@@ -77,7 +79,7 @@ void setup() {
   docImage = loadImage("documentation.png");
 
   // determine proper sketch scaling
-  scaling = min(displayWidth / 1000f, displayHeight / 1000f);
+  scaling = min(displayWidth / 800f, displayHeight / 800f);
 
   // setup audio
   minim = new Minim(this);
@@ -134,7 +136,7 @@ void setup() {
  * Main program loop. Performs delta time operations.
  */
 void draw() {
-  delta = targetFrameRate / frameRate;
+  delta = max(targetFrameRate / frameRate, 1);
   tick();
 }
 
@@ -155,6 +157,9 @@ void tick() {
   lights();
   ambientLight(255, 255, 255);
 
+  // update the colour cycle
+  colourUpdate();
+
   pushMatrix();
 
   // translate to sketch center
@@ -167,9 +172,6 @@ void tick() {
   rotateX(radians(camAngle[0] += (camSpin[state][0] * delta) * (beatVal + 1)));
   rotateY(radians(camAngle[1] += (camSpin[state][1] * delta) * (beatVal + 1)));
   rotateZ(radians(camAngle[2] += (camSpin[state][2] * delta) * (beatVal + 1)));
-
-  // update the colour cycle
-  colourUpdate();
 
   // update the state cycle
   stateUpdate();
@@ -303,10 +305,6 @@ void drawHUD() {
 void drawDocumentation() {
   scale(scaling);
   noStroke();
-
-  // draw an overlay over the visualizer
-  fill(color(0, 0, 0), 220);
-  rect(0, 0, width, height);
 
   // draw the text documentation
   fill(color(hue, 100, 100));

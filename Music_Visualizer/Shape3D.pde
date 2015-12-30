@@ -82,4 +82,3 @@ class Shape3D {
     popMatrix();
   }
 }
-

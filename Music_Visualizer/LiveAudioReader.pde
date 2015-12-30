@@ -18,7 +18,7 @@ class LiveAudioReader {
    */
   LiveAudioReader() {
     // setup minim fields
-    in = minim.getLineIn(Minim.STEREO, 2048);
+    in = minim.getLineIn(Minim.STEREO, 1024);
     beat = new BeatDetect(in.bufferSize(), in.sampleRate());
     beat.setSensitivity(0);
     bl = new BeatListener(beat, in);
@@ -118,4 +118,3 @@ class LiveAudioReader {
     }
   }
 }
-
