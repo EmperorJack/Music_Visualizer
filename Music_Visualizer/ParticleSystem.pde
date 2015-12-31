@@ -60,7 +60,7 @@ class ParticleSystem {
       p.update(velMult);
     }
     
-    strokeWeight(1);
+    strokeWeight(1.2);
 
     // compute and draw the lines coming from each particle
     for (int i = 0; i < particles.size(); i++) {
@@ -154,11 +154,13 @@ class ParticleSystem {
       // translate to particle depth
       translate(pos.x, pos.y, pos.z);
 
-      // particle opactiy varies distance to origin or bounds
+      // make the ellipse face the camera
       rotateX(-radians(camAngle[0]));
       rotateY(-radians(camAngle[1]));
       rotateZ(-radians(camAngle[2]));
-      fill(colour, distOpacity());
+      
+      // particle opactiy varies distance to origin or bounds
+      fill(colour, distOpacity() - 30);
 
       // draw the particle
       ellipse(0, 0, -3, 3);

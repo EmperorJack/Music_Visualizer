@@ -10,8 +10,8 @@ class LiveAudioReader {
   AudioInput in;
 
   // audio fields
-  float curVol;
-  float lastVol;
+  float curVol = 0;
+  float lastVol = 0;
 
   /*
    * Setup a new audio reader using minim.
@@ -22,10 +22,6 @@ class LiveAudioReader {
     beat = new BeatDetect(in.bufferSize(), in.sampleRate());
     beat.setSensitivity(0);
     bl = new BeatListener(beat, in);
-
-    // setup audio
-    curVol = 0;
-    lastVol = 0;
   }
 
   /*

@@ -76,7 +76,7 @@ class Shape3D {
     rotateX(radians(angle[0] += (spin[0] * delta)));
     rotateY(radians(angle[1] += (spin[1] * delta)));
     rotateZ(radians(angle[2] += (spin[2] * delta)));
-
+        
     shape(state);
 
     popMatrix();

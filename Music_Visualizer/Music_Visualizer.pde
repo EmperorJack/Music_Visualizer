@@ -13,9 +13,9 @@ float delta;
 int targetFrameRate = 60;
 
 // state and percentage fields
-float pct;
-float pctInc;
-int state;
+float pct = 0;
+float pctInc = 0.0005;
+int state = 0;
 
 // documentation and hud fields
 boolean displayHUD;
@@ -33,8 +33,8 @@ float pctCol;
 Minim minim;
 AudioPlayer song;
 LiveAudioReader audioReader;
-float beatVal;
-float volVal;
+float beatVal = 0;
+float volVal = 0;
 
 // particle system fields
 ParticleSystem[] particleSystems;
@@ -43,8 +43,21 @@ ParticleSystem[] particleSystems;
 Shape3D[] volumeShapes;
 
 // camera rotation
-float[] camAngle;
-float[][] camSpin;
+float[] camAngle = new float[3];
+float[][] camSpin = new float[][] {
+  {
+    -0.28, 0.2, -0.24
+  }
+  , {
+    0.14, -0.18, 0.22
+  }
+  , {
+    -0.1, 0.4, -0.1
+  }
+  , {
+    0.25, -0.15, 0.2
+  }
+};
 
 // frame recording
 boolean recordFrames = false;
@@ -66,11 +79,6 @@ void setup() {
   frameRate(60);
   noSmooth();
 
-  // state and percentage setup
-  pct = 0;
-  pctInc = 0.0005;
-  state = 0;
-
   // documentation and hud display setup
   displayHUD = false;
   displayDocumentation = false;
@@ -87,8 +95,6 @@ void setup() {
   if (recordAudioData) {
     song = minim.loadFile("deadmau5 feat. Chris James - The Veldt (Tommy Trash Remix).mp3");
   }
-  beatVal = 0;
-  volVal = 0;
 
   // setup particle systems
   particleSystems = new ParticleSystem[4];
@@ -103,23 +109,6 @@ void setup() {
   volumeShapes[1] = new Shape3D("shape2a.obj", "shape2b.obj", 0, 0, 0);
   volumeShapes[2] = new Shape3D("shape3a.obj", "shape3b.obj", 0, -1, 0);
   volumeShapes[3] = new Shape3D("shape4a.obj", "shape4b.obj", 0, 1, 0);
-
-  // setup camera rotations
-  camAngle = new float[3];
-  camSpin = new float[][] {
-    {
-      -0.28, 0.2, -0.24
-    }
-    , {
-      0.14, -0.18, 0.22
-    }
-    , {
-      -0.1, 0.4, -0.1
-    }
-    , {
-      0.25, -0.15, 0.2
-    }
-  };
 
   // play the track if recording or replaying audio data
   if (recordAudioData) {
